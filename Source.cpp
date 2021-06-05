@@ -13,6 +13,10 @@ public:
 	void clear();
 	int GetSize() { return Size; }					//Доступ к размеру head
 	T& operator [](const int index);
+	void push_front(T data);
+	void insert(int data,int index);
+	void removeAt(int index);
+	void pop_back();
 private:
 	template<typename T>						//шаблонная функция для разный типов данных
 	class Node									//вложенный класс элемента
@@ -93,15 +97,64 @@ T& List<T>::operator[](const int index)			//перегружаем оператор
 		current = current->pNext;
 		counter++;
 	}
+}
+template<typename T>
+void List<T>::push_front(T data)				//добавляение элемента в начало списка
+{
+	head = new Node <T> (data,head);
+	Size++;
+}
+template<typename T>
+void List<T>::insert(int data, int index)			//функция вставляет данные в любой индекс 
+{
+	if (index==0)
+	{
+		push_front(data);							//если индекс 0,то вызываем функцию присваивания
+	}
+	else
+	{
+		Node<T>* prevision = this->head;		// указатель принимает данные
+		for (int i = 0; i < index -1; i++)
+		{
+			prevision = prevision->pNext;			//цикл ищет индекс
+		}
+		
+		Node<T>* nevNode = new Node <T>(data, prevision->pNext);
+		Size++;
+	}
+}
+template<typename T>
+void List<T>::removeAt(int index)
+{
+	if (index == 0)
+	{
+		pop_front();							//если индекс 0,то вызываем функцию присваивания и удаляет
+	}
+	else
+	{
+		Node<T>* prevision = this->head;		// указатель принимает данные
+		for (int i = 0; i < index - 1; i++)
+		{
+			prevision = prevision->pNext;			//цикл ищет индекс
+		}
+
+		Node<T>* toDelete = prevision->pNext;		// новый указатель присваивает данные
+		prevision->pNext = toDelete->pNext;			
+		delete toDelete;							//удаляем старые данные
+		Size--;
+	}
+}
+template<typename T>
+void List<T>::pop_back()				//удаляет последний элемент
+{
+	removeAt(Size - 1);
 };
 
-
-int main()
+void Print()
 {
-	setlocale(LC_ALL, "ru");
 	List<int> lst;
 	int numberCount;
-	cout << " Введите колличество элементов" << endl;
+	cout << " Введите колличество элементов ";
 	cin >> numberCount;
 	for (int i = 0; i < numberCount; i++)			//заполняем автоматичеки 
 	{
@@ -117,10 +170,53 @@ int main()
 		cout << lst[i] << endl;
 	}
 	cout << " Элементов в списке " << lst.GetSize() << endl;
+
+
+
+	cout << "Вызываем front " << endl;
+	lst.push_front(5);
+	for (int i = 0; i < lst.GetSize(); i++)
+	{
+		cout << lst[i] << endl;
+
+	}
+	cout << " Элементов в списке " << lst.GetSize() << endl;
+	cout << "Вызываем RemoveAt " << endl;
+	lst.removeAt(2);
+	for (int i = 0; i < lst.GetSize(); i++)
+	{
+		cout << lst[i] << endl;
+	}
+	cout << " Элементов в списке " << lst.GetSize() << endl;
+
+	cout << "Вызываем Insert " << endl;
+	lst.insert(4, 2);
+	for (int i = 0; i < lst.GetSize(); i++)
+	{
+		cout << lst[i] << endl;
+	}
+	cout << " Элементов в списке " << lst.GetSize() << endl;
+
+	cout << "Pop_Back " << endl;
+	lst.pop_back();
+	for (int i = 0; i < lst.GetSize(); i++)
+	{
+		cout << lst[i] << endl;
+	}
+	cout << " Элементов в списке " << lst.GetSize() << endl;
+
 	
+
 	cout << "Вызываем Clear" << endl;
 	lst.clear();
 	cout << " Элементов в списке " << lst.GetSize() << endl;
+}
+
+int main()
+{
+	setlocale(LC_ALL, "ru");
+
+	Print();
 
 	return 0;
 }
