@@ -8,9 +8,10 @@ class List
 public:
 	List();
 	~List();
+	void pop_front();
 	void push_back(T data);
-	int GetSize() { return Size; }
-	//Доступ к размеру head
+	void clear();
+	int GetSize() { return Size; }					//Доступ к размеру head
 	T& operator [](const int index);
 private:
 	template<typename T>						//шаблонная функция для разный типов данных
@@ -26,21 +27,32 @@ private:
 		}
 
 	};
-	int Size;
+	int Size;									//колличество элементов
 	Node<T>* head;
 };
 template<typename T>
 List<T>::List()
 {
+	Size = 0;											//конструктор задает нули,чтобы не былл в переменных мусора
+	head = nullptr;
+}
+template<typename T>
+List<T>::~List()
+{
+	cout << "Вызвался деструктор " << endl;
+	clear();									//очистка всех элементов 
 
 }
 template<typename T>
-List<T>::~List()								//диструктор задает нули,чтобы не былл в переменных мусора
+void List<T>::pop_front()					//удаление первого элемента 
 {
-	Size = 0;
-	head = nullptr;
+	Node<T>* temp = head;						//временная переменная темп принимает данные 0 элемента.0 эелемент переходит на следующий
+	head = head->pNext;
 
-}
+	delete temp;
+	Size--;										//уменьшаем кол-во элементов
+};
+
 template<typename T>
 void List<T>::push_back(T data)					//конец списка
 {
@@ -60,6 +72,14 @@ void List<T>::push_back(T data)					//конец списка
 	Size++;										//Увеличиваем после добавление данных колличеств опеременной
 }
 template<typename T>
+void List<T>::clear()							//Удаляем все эелементы в списке
+{
+	while (Size)								//цикл крутит до 0 кол-во элементов
+	{
+		pop_front();							//в цикле вызываем метот фронт для удаления всех 0 элементов
+	}
+};
+template<typename T>
 T& List<T>::operator[](const int index)			//перегружаем оператор
 {
 	int counter = 0;
@@ -73,20 +93,34 @@ T& List<T>::operator[](const int index)			//перегружаем оператор
 		current = current->pNext;
 		counter++;
 	}
-}
+};
+
 
 int main()
 {
+	setlocale(LC_ALL, "ru");
 	List<int> lst;
 	int numberCount;
+	cout << " Введите колличество элементов" << endl;
 	cin >> numberCount;
 	for (int i = 0; i < numberCount; i++)			//заполняем автоматичеки 
 	{
 		lst.push_back(rand() % 20);
+		cout << lst[i] << endl;
 	}
+
+
+	cout << " Элементов в списке " << lst.GetSize() << endl << " Выполняется метод pop_front" << endl;
+	lst.pop_front();
 	for (int i = 0; i < lst.GetSize(); i++)
 	{
 		cout << lst[i] << endl;
 	}
+	cout << " Элементов в списке " << lst.GetSize() << endl;
+	
+	cout << "Вызываем Clear" << endl;
+	lst.clear();
+	cout << " Элементов в списке " << lst.GetSize() << endl;
+
 	return 0;
 }
